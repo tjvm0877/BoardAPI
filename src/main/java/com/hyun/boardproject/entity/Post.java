@@ -1,6 +1,5 @@
 package com.hyun.boardproject.entity;
 
-import com.hyun.boardproject.dto.PostRequestDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -26,21 +25,32 @@ public class Post extends TimeStamps {
 
     // 게시물 내용
     @Column(nullable = false)
-    private String content;
+    private String contents;
 
     // 게시물 변경 시 필요한 비밀번호
     @Column(nullable = false)
     private String password;
 
-    public Post(PostRequestDto postRequestDto) {
-        this.writer = postRequestDto.getWriter();
-        this.title = postRequestDto.getTitle();
-        this.content = postRequestDto.getContent();
-        this.password = postRequestDto.getPassword();
+    public Post(String writer, String title, String contents, String password) {
+        this.writer = writer;
+        this.title = title;
+        this.contents = contents;
+        this.password = password;
+    }
+    //    public void create(String writer, String title, String contents, String password) {
+//        this.writer = writer;
+//        this.title = title;
+//        this.contents = contents;
+//        this.password = password;
+//    }
+
+    public void update(String title, String contents) {
+        this.title = title;
+        this.contents = contents;
     }
 
-    public void update(String title, String content) {
-        this.title = title;
-        this.content = content;
+    public boolean pwMatch(String enteredPw) {
+        if (enteredPw.equals(this.password)) return true;
+        return false;
     }
 }

@@ -21,7 +21,7 @@ public class PostService {
     public List<PostResponseDto> getAllPosts() {
         List<Post> posts = postRepository.findAllByOrderByModifiedAtDesc();
         List<PostResponseDto> responses = posts.stream()
-                .map(m -> new PostResponseDto(m.getId(), m.getWriter(), m.getTitle(), m.getContent(), m.getCreatedAt(), m.getModifiedAt()))
+                .map(m -> new PostResponseDto(m.getId(), m.getWriter(), m.getTitle(), m.getContents(), m.getCreatedAt(), m.getModifiedAt()))
                 .collect(Collectors.toList());
         return responses;
     }
@@ -31,43 +31,42 @@ public class PostService {
         Post post = postRepository.findById(id).orElseThrow(
                 () -> new IllegalArgumentException("게시물이 존재하지 않습니다.")
         );
-        PostResponseDto response = new PostResponseDto(post.getId(), post.getWriter(), post.getTitle(), post.getContent(), post.getCreatedAt(), post.getModifiedAt());
+        PostResponseDto response = new PostResponseDto(post.getId(), post.getWriter(), post.getTitle(), post.getContents(), post.getCreatedAt(), post.getModifiedAt());
         return response;
     }
 
     @Transactional
     public PostResponseDto createPost(PostRequestDto requestDto) {
-        Post post = new Post(requestDto);
+        Post post = new Post(requestDto.getWriter(), requestDto.getTitle(), requestDto.getTitle(), requestDto.getPassword());
         postRepository.save(post);
 
-        PostResponseDto responseDto = new PostResponseDto(post.getId(), post.getWriter(), post.getContent(), post.getTitle(), post.getCreatedAt(), post.getModifiedAt());
+        PostResponseDto responseDto = new PostResponseDto(post.getId(), post.getWriter(), post.getContents(), post.getTitle(), post.getCreatedAt(), post.getModifiedAt());
         return responseDto;
     }
+
     @Transactional
     public Long updatePost(Long id, PostRequestDto requestDto) {
         Post selectedPost = postRepository.findById(id).orElseThrow(
                 () -> new IllegalArgumentException("게시물이 존재하지 않습니다.")
         );
-        if (!checkPW(selectedPost, id, requestDto.getPassword())) {
-            throw new IllegalArgumentException("비밀번호가 틀렸습니다.");
+        if (!selectedPost.pwMatch(requestDto.getPassword())) {
+            new IllegalArgumentException("잘못된 비밀번호 입니다.");
         }
         selectedPost.update(requestDto.getTitle(), requestDto.getContent());
         return selectedPost.getId();
     }
+
     @Transactional
     public void deletePost(Long id, String password) {
         Post selectedPost = postRepository.findById(id).orElseThrow(
                 () -> new IllegalArgumentException("게시물이 존재하지 않습니다.")
         );
-        if (checkPW(selectedPost, id, password)) {
-            postRepository.deleteById(id);
-        } else {
-            throw new IllegalArgumentException();
+        //비밀번호 처리 필요
+        if (!selectedPost.pwMatch(password)) {
+            new IllegalArgumentException("잘못된 비밀번호 입니다.");
         }
-    }
-    public boolean checkPW(Post post, Long postID, String password) {
-        String realPassword = post.getPassword();
-        boolean matches = realPassword.equals(password);
-        return matches;
+
+        // 게시물 삭제
+        postRepository.deleteById(id);
     }
 }
