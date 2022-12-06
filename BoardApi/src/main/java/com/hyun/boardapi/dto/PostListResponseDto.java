@@ -12,7 +12,7 @@ public class PostListResponseDto extends ResponseDto {
     List<PostResponseDto> postList = new ArrayList<>();
 
     public PostListResponseDto() {
-        super("강의 목록 조회 성공", HttpStatus.OK.value());
+        super("게시판 목록 조회 성공", HttpStatus.OK.value());
     }
 
     public void addPost(PostResponseDto responseDto) {
