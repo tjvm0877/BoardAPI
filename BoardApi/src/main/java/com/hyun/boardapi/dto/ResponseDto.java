@@ -5,12 +5,12 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class ResponseDto {
+public class ResponseDto<T> {
     private String msg;
-    private int StatusCode;
+    private T data;
 
-    public ResponseDto(String msg, int statusCode) {
+    public ResponseDto(String msg, T data) {
         this.msg = msg;
-        StatusCode = statusCode;
+        this.data = data;
     }
 }
