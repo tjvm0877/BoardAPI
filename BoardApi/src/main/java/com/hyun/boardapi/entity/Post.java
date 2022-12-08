@@ -1,6 +1,7 @@
 package com.hyun.boardapi.entity;
 
 import com.hyun.boardapi.dto.PostRequestDto;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -15,30 +16,23 @@ public class Post extends TimeStamps{
     private Long id;
 
     @Column(nullable = false)
-    private String writer;
-
-    @Column(nullable = false)
     private String title;
 
     @Column(nullable = false)
     private String contents;
 
-    @Column(nullable = false)
-    private String password;
+    @ManyToOne
+    @JoinColumn(name = "USER_ID", nullable = false)
+    private User user;
 
-    public void fromDto(CreatePost createPost) {
-        this.writer = createPost.getWriter();
-        this.title = createPost.getTitle();
-        this.contents = createPost.getContents();
-        this.password = createPost.getPassword();
+    public Post(String title, String contents, User user) {
+        this.title = title;
+        this.contents = contents;
+        this.user = user;
     }
 
-    public void update(UpdatePost updatePost) {
-        this.title = updatePost.getTitle();
-        this.contents = updatePost.getContents();
-    }
-
-    public boolean passwordMatch(String password) {
-        return this.password == password;
+    public void update(String title, String contents) {
+        this.title = title;
+        this.contents = contents;
     }
 }

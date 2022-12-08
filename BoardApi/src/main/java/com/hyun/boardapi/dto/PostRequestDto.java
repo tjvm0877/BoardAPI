@@ -1,14 +1,15 @@
 package com.hyun.boardapi.dto;
-
-import com.hyun.boardapi.entity.CreatePost;
-import com.hyun.boardapi.entity.UpdatePost;
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
-public class PostRequestDto implements UpdatePost, CreatePost {
-    private String writer;
+@Setter
+public class PostRequestDto {
     private String title;
     private String contents;
-    private String password;
 
+    public PostRequestDto(String title, String contents) {
+        this.title = title;
+        this.contents = contents;
+    }
 }
